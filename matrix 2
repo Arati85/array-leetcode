@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+Find Median in Row-wise Sorted Matrix
+int findMedian(vector<vector<int>>& matrix, int r, int c) {
+    vector<int> arr;
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++)
+            arr.push_back(matrix[i][j]);
+    sort(arr.begin(), arr.end());
+    int n = arr.size();
+    return arr[n / 2];
+}
+
+int main1() {
+    cout << "Find Median in Row-wise Sorted Matrix\n";
+    int r, c;
+    cout << "Enter number of rows and columns: ";
+    cin >> r >> c;
+    vector<vector<int>> matrix(r, vector<int>(c));
+    cout << "Enter matrix elements (row-wise sorted):\n";
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++)
+            cin >> matrix[i][j];
+    cout << "Median of matrix: " << findMedian(matrix, r, c) << endl;
+    return 0;
+}
+
+
+Identify Row with Maximum 1s
+int rowWithMax1s(vector<vector<int>>& matrix, int r, int c) {
+    int maxCount = 0, rowIndex = -1;
+    for (int i = 0; i < r; i++) {
+        int count = 0;
+        for (int j = 0; j < c; j++) {
+            if (matrix[i][j] == 1)
+                count++;
+        }
+        if (count > maxCount) {
+            maxCount = count;
+            rowIndex = i;
+        }
+    }
+    return rowIndex;
+}
+
+int main2() {
+    cout << "\nIdentify Row with Maximum 1s\n";
+    int r, c;
+    cout << "Enter number of rows and columns: ";
+    cin >> r >> c;
+    vector<vector<int>> matrix(r, vector<int>(c));
+    cout << "Enter matrix elements (0s and 1s):\n";
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++)
+            cin >> matrix[i][j];
+    cout << "Row with maximum 1s: " << rowWithMax1s(matrix, r, c) << endl;
+    return 0;
+}
+
+
+Rotate Matrix by 90 Degrees
+void rotate90(vector<vector<int>>& matrix, int n) {
+    // transpose
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            swap(matrix[i][j], matrix[j][i]);
+        }
+    }
+    // reverse each row
+    for (int i = 0; i < n; i++) {
+        reverse(matrix[i].begin(), matrix[i].end());
+    }
+}
+
+int main3() {
+    cout << "\nRotate Matrix by 90 Degrees\n";
+    int n;
+    cout << "Enter size of square matrix: ";
+    cin >> n;
+    vector<vector<int>> matrix(n, vector<int>(n));
+    cout << "Enter matrix elements:\n";
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            cin >> matrix[i][j];
+    rotate90(matrix, n);
+    cout << "Matrix after rotation:\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            cout << matrix[i][j] << " ";
+        cout << endl;
+    }
+    return 0;
+}
