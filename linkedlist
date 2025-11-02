@@ -1,0 +1,283 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
+};
+
+void printList(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+}
+
+Add Node on Any Position
+void addNode(Node*& head, int data, int pos) {
+    Node* newNode = new Node(data);
+    if (pos == 1) {
+        newNode->next = head;
+        head = newNode;
+        return;
+    }
+    Node* temp = head;
+    for (int i = 1; temp != NULL && i < pos - 1; i++) {
+        temp = temp->next;
+    }
+    if (temp == NULL) return;
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+int main1() {
+    Node* head = NULL;
+    head = new Node(10);
+    head->next = new Node(20);
+    head->next->next = new Node(30);
+    int data, pos;
+    cout << "Enter value and position: ";
+    cin >> data >> pos;
+    addNode(head, data, pos);
+    printList(head);
+    return 0;
+}
+
+
+Delete Node from Given Position
+void deleteNode(Node*& head, int pos) {
+    if (head == NULL) return;
+    if (pos == 1) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        return;
+    }
+    Node* temp = head;
+    for (int i = 1; temp != NULL && i < pos - 1; i++) {
+        temp = temp->next;
+    }
+    if (temp == NULL || temp->next == NULL) return;
+    Node* del = temp->next;
+    temp->next = temp->next->next;
+    delete del;
+}
+
+int main2() {
+    Node* head = new Node(10);
+    head->next = new Node(20);
+    head->next->next = new Node(30);
+    int pos;
+    cout << "Enter position to delete: ";
+    cin >> pos;
+    deleteNode(head, pos);
+    printList(head);
+    return 0;
+}
+
+
+Search Node in a Linked List
+bool searchNode(Node* head, int key) {
+    while (head != NULL) {
+        if (head->data == key) return true;
+        head = head->next;
+    }
+    return false;
+}
+
+int main3() {
+    Node* head = new Node(10);
+    head->next = new Node(20);
+    head->next->next = new Node(30);
+    int key;
+    cout << "Enter value to search: ";
+    cin >> key;
+    if (searchNode(head, key))
+        cout << "Node found\n";
+    else
+        cout << "Node not found\n";
+    return 0;
+}
+
+
+Count Nodes in Linked List
+int countNodes(Node* head) {
+    int count = 0;
+    while (head != NULL) {
+        count++;
+        head = head->next;
+    }
+    return count;
+}
+
+int main4() {
+    Node* head = new Node(10);
+    head->next = new Node(20);
+    head->next->next = new Node(30);
+    cout << "Total nodes: " << countNodes(head) << endl;
+    return 0;
+}
+
+
+Reverse Linked List
+Node* reverseList(Node* head) {
+    Node* prev = NULL;
+    Node* curr = head;
+    Node* next = NULL;
+    while (curr != NULL) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+
+int main5() {
+    Node* head = new Node(10);
+    head->next = new Node(20);
+    head->next->next = new Node(30);
+    head = reverseList(head);
+    printList(head);
+    return 0;
+}
+
+
+Find Mid of Linked List
+Node* findMid(Node* head) {
+    Node* slow = head;
+    Node* fast = head;
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+int main6() {
+    Node* head = new Node(10);
+    head->next = new Node(20);
+    head->next->next = new Node(30);
+    head->next->next->next = new Node(40);
+    cout << "Middle node: " << findMid(head)->data << endl;
+    return 0;
+}
+
+
+Merge Two Sorted Linked Lists
+Node* mergeLists(Node* l1, Node* l2) {
+    if (!l1) return l2;
+    if (!l2) return l1;
+    if (l1->data < l2->data) {
+        l1->next = mergeLists(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = mergeLists(l1, l2->next);
+        return l2;
+    }
+}
+
+int main7() {
+    Node* l1 = new Node(1);
+    l1->next = new Node(3);
+    l1->next->next = new Node(5);
+    Node* l2 = new Node(2);
+    l2->next = new Node(4);
+    l2->next->next = new Node(6);
+    Node* merged = mergeLists(l1, l2);
+    printList(merged);
+    return 0;
+}
+
+
+Add Two Numbers Represented by Linked Lists
+Node* addTwoNumbers(Node* l1, Node* l2) {
+    Node* dummy = new Node(0);
+    Node* curr = dummy;
+    int carry = 0;
+    while (l1 || l2 || carry) {
+        int sum = carry;
+        if (l1) { sum += l1->data; l1 = l1->next; }
+        if (l2) { sum += l2->data; l2 = l2->next; }
+        carry = sum / 10;
+        curr->next = new Node(sum % 10);
+        curr = curr->next;
+    }
+    return dummy->next;
+}
+
+int main8() {
+    Node* l1 = new Node(2);
+    l1->next = new Node(4);
+    l1->next->next = new Node(3);
+    Node* l2 = new Node(5);
+    l2->next = new Node(6);
+    l2->next->next = new Node(4);
+    Node* sum = addTwoNumbers(l1, l2);
+    printList(sum);
+    return 0;
+}
+
+
+Rotate Linked List
+Node* rotateList(Node* head, int k) {
+    if (!head || k == 0) return head;
+    Node* temp = head;
+    int len = 1;
+    while (temp->next) {
+        temp = temp->next;
+        len++;
+    }
+    temp->next = head;
+    k = k % len;
+    int steps = len - k;
+    while (steps--) temp = temp->next;
+    head = temp->next;
+    temp->next = NULL;
+    return head;
+}
+
+int main9() {
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    head->next->next->next = new Node(4);
+    int k;
+    cout << "Enter rotation count: ";
+    cin >> k;
+    head = rotateList(head, k);
+    printList(head);
+    return 0;
+}
+
+
+Remove Duplicates from Sorted Linked List
+Node* removeDuplicates(Node* head) {
+    Node* curr = head;
+    while (curr && curr->next) {
+        if (curr->data == curr->next->data) {
+            Node* temp = curr->next;
+            curr->next = curr->next->next;
+            delete temp;
+        } else {
+            curr = curr->next;
+        }
+    }
+    return head;
+}
+
+int main10() {
+    Node* head = new Node(1);
+    head->next = new Node(1);
+    head->next->next = new Node(2);
+    head->next->next->next = new Node(3);
+    head = removeDuplicates(head);
+    printList(head);
+    return 0;
+}
