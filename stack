@@ -1,0 +1,239 @@
+#include <iostream>
+#include <stack>
+#include <vector>
+#include <string>
+#include <climits>
+using namespace std;
+
+Stack Implementation using Array
+class StackArr {
+    int arr[1000];
+    int top;
+public:
+    StackArr() { top = -1; }
+    void push(int x) {
+        if (top >= 999) cout << "Stack Overflow\n";
+        else arr[++top] = x;
+    }
+    void pop() {
+        if (top < 0) cout << "Stack Underflow\n";
+        else top--;
+    }
+    int peek() {
+        if (top < 0) return -1;
+        return arr[top];
+    }
+    bool empty() { return top == -1; }
+};
+
+int main1() {
+    cout << "Stack Implementation using Array\n";
+    StackArr s;
+    int n; cout << "Enter number of elements to push: "; cin >> n;
+    for (int i = 0; i < n; i++) {
+        int x; cin >> x; s.push(x);
+    }
+    cout << "Top element: " << s.peek() << endl;
+    s.pop();
+    cout << "Top after pop: " << s.peek() << endl;
+    return 0;
+}
+
+
+Next Greater Element
+vector<int> nextGreaterElement(vector<int>& arr) {
+    int n = arr.size();
+    vector<int> res(n, -1);
+    stack<int> s;
+    for (int i = 0; i < n; i++) {
+        while (!s.empty() && arr[i] > arr[s.top()]) {
+            res[s.top()] = arr[i];
+            s.pop();
+        }
+        s.push(i);
+    }
+    return res;
+}
+
+int main2() {
+    cout << "\nNext Greater Element\n";
+    int n; cin >> n;
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    vector<int> ans = nextGreaterElement(arr);
+    for (int x : ans) cout << x << " ";
+    cout << endl;
+    return 0;
+}
+
+
+Smaller Element on Left
+vector<int> smallerOnLeft(vector<int>& arr) {
+    int n = arr.size();
+    vector<int> res(n, -1);
+    stack<int> s;
+    for (int i = 0; i < n; i++) {
+        while (!s.empty() && s.top() >= arr[i])
+            s.pop();
+        if (!s.empty())
+            res[i] = s.top();
+        s.push(arr[i]);
+    }
+    return res;
+}
+
+int main3() {
+    cout << "\nSmaller Element on Left\n";
+    int n; cin >> n;
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    vector<int> ans = smallerOnLeft(arr);
+    for (int x : ans) cout << x << " ";
+    cout << endl;
+    return 0;
+}
+
+
+Valid Parentheses
+bool isValid(string s) {
+    stack<char> st;
+    for (char c : s) {
+        if (c == '(' || c == '{' || c == '[') st.push(c);
+        else {
+            if (st.empty()) return false;
+            if ((c == ')' && st.top() != '(') ||
+                (c == '}' && st.top() != '{') ||
+                (c == ']' && st.top() != '[')) return false;
+            st.pop();
+        }
+    }
+    return st.empty();
+}
+
+int main4() {
+    cout << "\nValid Parentheses\n";
+    string s; cin >> s;
+    cout << (isValid(s) ? "Valid" : "Invalid") << endl;
+    return 0;
+}
+
+
+Evaluate Postfix Expression
+int evalPostfix(string s) {
+    stack<int> st;
+    for (char c : s) {
+        if (isdigit(c)) st.push(c - '0');
+        else {
+            int b = st.top(); st.pop();
+            int a = st.top(); st.pop();
+            switch (c) {
+                case '+': st.push(a + b); break;
+                case '-': st.push(a - b); break;
+                case '*': st.push(a * b); break;
+                case '/': st.push(a / b); break;
+            }
+        }
+    }
+    return st.top();
+}
+
+int main5() {
+    cout << "\nEvaluate Postfix Expression\n";
+    string s; cin >> s;
+    cout << "Result: " << evalPostfix(s) << endl;
+    return 0;
+}
+
+
+Min Stack
+class MinStack {
+    stack<int> s, minS;
+public:
+    void push(int val) {
+        s.push(val);
+        if (minS.empty() || val <= minS.top())
+            minS.push(val);
+    }
+    void pop() {
+        if (s.top() == minS.top())
+            minS.pop();
+        s.pop();
+    }
+    int top() { return s.top(); }
+    int getMin() { return minS.top(); }
+};
+
+int main6() {
+    cout << "\nMin Stack\n";
+    MinStack st;
+    int n; cin >> n;
+    while (n--) {
+        int x; cin >> x; st.push(x);
+    }
+    cout << "Minimum: " << st.getMin() << endl;
+    return 0;
+}
+
+
+Asteroid Collision
+vector<int> asteroidCollision(vector<int>& asteroids) {
+    stack<int> st;
+    for (int a : asteroids) {
+        bool destroyed = false;
+        while (!st.empty() && st.top() > 0 && a < 0) {
+            if (st.top() < -a) { st.pop(); continue; }
+            else if (st.top() == -a) st.pop();
+            destroyed = true;
+            break;
+        }
+        if (!destroyed) st.push(a);
+    }
+    vector<int> res;
+    while (!st.empty()) {
+        res.insert(res.begin(), st.top());
+        st.pop();
+    }
+    return res;
+}
+
+int main7() {
+    cout << "\nAsteroid Collision\n";
+    int n; cin >> n;
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    vector<int> res = asteroidCollision(arr);
+    for (int x : res) cout << x << " ";
+    cout << endl;
+    return 0;
+}
+
+
+Stock Span Problem
+vector<int> stockSpan(vector<int>& prices) {
+    int n = prices.size();
+    vector<int> span(n);
+    stack<int> st;
+    for (int i = 0; i < n; i++) {
+        while (!st.empty() && prices[st.top()] <= prices[i])
+            st.pop();
+        span[i] = (st.empty()) ? (i + 1) : (i - st.top());
+        st.push(i);
+    }
+    return span;
+}
+
+int main8() {
+    cout << "\nStock Span Problem\n";
+    int n; cin >> n;
+    vector<int> prices(n);
+    for (int i = 0; i < n; i++) cin >> prices[i];
+    vector<int> res = stockSpan(prices);
+    for (int x : res) cout << x << " ";
+    cout << endl;
+    return 0;
+}
+
+
+int main() {
+    return main8(); 
+}
